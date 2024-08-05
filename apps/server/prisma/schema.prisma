@@ -1,0 +1,58 @@
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+enum Role {
+    USER
+    REALTOR
+}
+
+model User {
+    id                    String                  @id @default(cuid())
+    email                 String                  @unique
+    firstName             String?                 @map("first_name")
+    lastName              String?                 @map("last_name")
+    updatedAt             DateTime                @updatedAt @map("updated_at")
+    createdAt             DateTime                @default(now()) @map("created_at")
+    password              String
+    apartment             Apartment[]
+    userFavoriteApartment UserFavoriteApartment[]
+    role                  Role
+
+    @@map("user")
+}
+
+model UserFavoriteApartment {
+    id          String    @id @default(cuid())
+    apartmentId String    @map("apartment_id")
+    apartment   Apartment @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId      String    @map("user_id")
+    updatedAt   DateTime  @updatedAt @map("updated_at")
+    createdAt   DateTime  @default(now()) @map("created_at")
+
+    @@map("user_favorite_apartment")
+}
+
+model Apartment {
+    id                    String                  @id @default(cuid())
+    description           String?
+    price                 Float
+    title                 String
+    roomNo                String                  @map("room_no")
+    updatedAt             DateTime                @updatedAt @map("updated_at")
+    createdAt             DateTime                @default(now()) @map("created_at")
+    realtor               User                    @relation(fields: [realtorId], references: [id], onDelete: Cascade)
+    realtorId             String                  @map("user_id")
+    previewImage          String                  @map("preview_image")
+    areaSize              Float                   @map("area_size")
+    userFavoriteApartment UserFavoriteApartment[]
+
+    @@map("apartment")
+}

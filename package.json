@@ -1,0 +1,15 @@
+{
+  "name": "apartment-rentals-app",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev"
+  },
+  "private": true,
+  "devDependencies": {
+    "turbo": "^2.0.9"
+  },
+  "packageManager": "yarn@1.22.22"
+}
